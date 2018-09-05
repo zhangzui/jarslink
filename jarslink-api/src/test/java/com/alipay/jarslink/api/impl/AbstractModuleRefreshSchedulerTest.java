@@ -33,6 +33,7 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import java.util.ArrayList;
 
 import static com.alipay.jarslink.api.impl.ModuleLoaderImplTest.buildModuleConfig;
+import static com.alipay.jarslink.api.impl.ModuleLoaderImplTest.buildModuleConfigZZZ;
 
 /**
  * JarsLink API入口,使用TITAN API必须继承AbstractModuleRefreshScheduler然后提供模块信息
@@ -105,6 +106,38 @@ public class AbstractModuleRefreshSchedulerTest {
 
         Assert.assertEquals(moduleConfig.getVersion(), demo.getVersion());
 
+    }
+
+    @Test
+    public void shouldUpdateModulezzz() throws InterruptedException {
+        //装载模块
+        abstractModuleRefreshSchedulerImpl.setModuleConfigs(ImmutableList.of(buildModuleConfigZZZ
+                (true)));
+        Assert.assertEquals(1, abstractModuleRefreshSchedulerImpl.queryModuleConfigs().size());
+        abstractModuleRefreshSchedulerImpl.run();
+        Module demo = moduleManager.find("helloworld");
+
+        String result = demo.doAction("helloWorld", "zzz");
+        System.out.println("result = " + result);
+        //卸载
+        abstractModuleRefreshSchedulerImpl.setModuleConfigs(new ArrayList<ModuleConfig>());
+        abstractModuleRefreshSchedulerImpl.run();
+        Thread.sleep(10000);
+
+        //修改模块
+        ModuleConfig moduleConfig = buildModuleConfigZZZ(false);
+        moduleConfig.setVersion("1.1");
+
+        abstractModuleRefreshSchedulerImpl.setModuleConfigs(ImmutableList.of(moduleConfig));
+        abstractModuleRefreshSchedulerImpl.run();
+
+        //此处由于此前已经存在该模块，所以必须要激活才能使用
+        moduleManager.activeVersion("demo", moduleConfig.getVersion());
+        demo = moduleManager.find(moduleConfig.getName());
+        result = demo.doAction("helloWorld", "zzz");
+        System.out.println("result = " + result);
+        //上述部分可以替换为下面的写法
+        //demo = moduleManager.find(moduleConfig.getName(), moduleConfig.getVersion());
     }
 
 }

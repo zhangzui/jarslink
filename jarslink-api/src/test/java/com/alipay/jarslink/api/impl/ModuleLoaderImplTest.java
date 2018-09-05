@@ -35,6 +35,14 @@ public class ModuleLoaderImplTest {
     private ModuleLoader moduleLoader;
 
     @Test
+    public void test() {
+        //1:加载模块
+        Module module = loadModule();
+        String result = module.doAction("xmlAction", "hello");
+        System.out.println(result);
+    }
+
+  @Test
     public void shouldLoadModule() {
         //1:加载模块
         Module module = loadModule();
@@ -52,15 +60,19 @@ public class ModuleLoaderImplTest {
     }
 
     @Test
-    public void shouldLoadMultiModule() {
+    public void shouldLoadMultiModule() throws InterruptedException {
         for (int i = 0; i < 10; i++) {
             //1:加载模块
             String name = "demo" + i;
-            Module module = loadModule(name);
+            Module module = loadModulezzz(name);
             Assert.assertNotNull(module);
+
+            String result = module.doAction("helloWorld", "zzz");
+            System.out.println("result = " + result);
             //卸载模块
             moduleLoader.unload(module);
             Assert.assertTrue(module.getActions().isEmpty());
+            Thread.sleep(5000);
         }
 
     }
@@ -183,6 +195,8 @@ public class ModuleLoaderImplTest {
         //卸载模块
         moduleLoader.unload(module);
         Assert.assertTrue(module.getActions().isEmpty());
+
+
     }
 
     /**
@@ -194,6 +208,10 @@ public class ModuleLoaderImplTest {
 
     public static ModuleConfig buildModuleConfig(boolean enabled) {
         return buildModuleConfig("demo", "1.0.0.20170621", enabled);
+    }
+
+    public static ModuleConfig buildModuleConfigZZZ(boolean enabled) {
+        return buildModuleConfigZZZ("helloworld", "1.0.0.20170621", enabled);
     }
 
     public static ModuleConfig buildModuleConfig(String name, boolean enabled) {
@@ -223,6 +241,33 @@ public class ModuleLoaderImplTest {
         return moduleConfig;
     }
 
+    public static ModuleConfig buildModuleConfigZZZ(String name, String version, boolean enabled) {
+
+
+        ModuleConfig moduleConfig = new ModuleConfig();
+        String scanBase = "com.zz.opensdk.jarslink.main";
+
+        moduleConfig.addScanPackage(scanBase);
+        moduleConfig.removeScanPackage(scanBase);
+        Map<String, Object> properties = new HashMap();
+        moduleConfig.withEnabled(true).
+                withVersion("1.0.0.20170621").
+                withOverridePackages(ImmutableList.of("com.zz.opensdk.jarslink.action")).
+                withProperties(properties);
+
+        URL demoModule = Thread.currentThread().getContextClassLoader().getResource("my_jarslink-1.0.0.jar");
+
+        moduleConfig.setOverridePackages(ImmutableList.of("com.zz.opensdk.jarslink.action"));
+        moduleConfig.setName(name);
+        moduleConfig.setEnabled(true);
+        moduleConfig.setVersion("1.0.0.20170621");
+        properties.put("url", "127.0.0.1");
+        moduleConfig.setProperties(properties);
+        moduleConfig.setModuleUrl(ImmutableList.of(demoModule));
+        return moduleConfig;
+    }
+
+
     private Module loadModule() {
         return moduleLoader.load(buildModuleConfig(true));
     }
@@ -230,5 +275,8 @@ public class ModuleLoaderImplTest {
     private Module loadModule(String name) {
         return moduleLoader.load(buildModuleConfig(name, "1.0.0.20170621", true));
     }
+    private Module loadModulezzz(String name) {
+            return moduleLoader.load(buildModuleConfigZZZ(name, "1.0.0.20170621", true));
+        }
 
 }
