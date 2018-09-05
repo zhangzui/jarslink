@@ -214,6 +214,10 @@ public class ModuleLoaderImplTest {
         return buildModuleConfigZZZ("helloWorld", version, enabled);
     }
 
+    public static ModuleConfig buildModuleConfigZZZ1(boolean enabled,String version) {
+        return buildModuleConfigZZZ("helloWorld1", version, enabled);
+    }
+
     public static ModuleConfig buildModuleConfig(String name, boolean enabled) {
         return buildModuleConfig(name, "1.0.0.20170621", enabled);
     }
@@ -242,8 +246,6 @@ public class ModuleLoaderImplTest {
     }
 
     public static ModuleConfig buildModuleConfigZZZ(String name, String version, boolean enabled) {
-
-
         ModuleConfig moduleConfig = new ModuleConfig();
         String scanBase = "com.zz.opensdk.jarslink.main";
 
@@ -258,6 +260,7 @@ public class ModuleLoaderImplTest {
         URL demoModule = Thread.currentThread().getContextClassLoader().getResource("my_jarslink-"+version+".jar");
 
         moduleConfig.setOverridePackages(ImmutableList.of("com.zz.opensdk.jarslink.action"));
+        moduleConfig.setNeedUnloadOldVersion(false);
         moduleConfig.setName(name);
         moduleConfig.setEnabled(enabled);
         moduleConfig.setVersion(version);
