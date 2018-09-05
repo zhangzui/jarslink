@@ -210,8 +210,8 @@ public class ModuleLoaderImplTest {
         return buildModuleConfig("demo", "1.0.0.20170621", enabled);
     }
 
-    public static ModuleConfig buildModuleConfigZZZ(boolean enabled) {
-        return buildModuleConfigZZZ("helloworld", "1.0.0.20170621", enabled);
+    public static ModuleConfig buildModuleConfigZZZ(boolean enabled,String version) {
+        return buildModuleConfigZZZ("helloWorld", version, enabled);
     }
 
     public static ModuleConfig buildModuleConfig(String name, boolean enabled) {
@@ -250,17 +250,17 @@ public class ModuleLoaderImplTest {
         moduleConfig.addScanPackage(scanBase);
         moduleConfig.removeScanPackage(scanBase);
         Map<String, Object> properties = new HashMap();
-        moduleConfig.withEnabled(true).
-                withVersion("1.0.0.20170621").
+        moduleConfig.withEnabled(enabled).
+                withVersion(version).
                 withOverridePackages(ImmutableList.of("com.zz.opensdk.jarslink.action")).
                 withProperties(properties);
 
-        URL demoModule = Thread.currentThread().getContextClassLoader().getResource("my_jarslink-1.0.0.jar");
+        URL demoModule = Thread.currentThread().getContextClassLoader().getResource("my_jarslink-"+version+".jar");
 
         moduleConfig.setOverridePackages(ImmutableList.of("com.zz.opensdk.jarslink.action"));
         moduleConfig.setName(name);
-        moduleConfig.setEnabled(true);
-        moduleConfig.setVersion("1.0.0.20170621");
+        moduleConfig.setEnabled(enabled);
+        moduleConfig.setVersion(version);
         properties.put("url", "127.0.0.1");
         moduleConfig.setProperties(properties);
         moduleConfig.setModuleUrl(ImmutableList.of(demoModule));
