@@ -34,7 +34,6 @@ import java.util.ArrayList;
 
 import static com.alipay.jarslink.api.impl.ModuleLoaderImplTest.buildModuleConfig;
 import static com.alipay.jarslink.api.impl.ModuleLoaderImplTest.buildModuleConfigZZZ;
-import static com.alipay.jarslink.api.impl.ModuleLoaderImplTest.buildModuleConfigZZZ1;
 
 /**
  * JarsLink API入口,使用TITAN API必须继承AbstractModuleRefreshScheduler然后提供模块信息
@@ -113,7 +112,7 @@ public class AbstractModuleRefreshSchedulerTest {
     public void shouldUpdateModuleaaa() throws InterruptedException {
         while (true){
             abstractModuleRefreshSchedulerImpl.setModuleConfigs(ImmutableList.of(buildModuleConfigZZZ
-                    (true,"1.0.0")));
+                    ("helloworld",true,"1.0.0")));
             System.out.println("size:"+abstractModuleRefreshSchedulerImpl.queryModuleConfigs().size());
             abstractModuleRefreshSchedulerImpl.run();
 
@@ -122,31 +121,6 @@ public class AbstractModuleRefreshSchedulerTest {
             System.out.println("result = " + result);
             Thread.sleep(5000);
         }
-    }
-    @Test
-    public void shouldUpdateModulezzz() throws InterruptedException {
-        //装载模块
-        abstractModuleRefreshSchedulerImpl.setModuleConfigs(ImmutableList.of(buildModuleConfigZZZ
-                (true,"1.0.0")));
-        abstractModuleRefreshSchedulerImpl.run();
-
-        //修改模块
-        ModuleConfig moduleConfig = buildModuleConfigZZZ1(true,"1.0.1");
-        abstractModuleRefreshSchedulerImpl.setModuleConfigs(ImmutableList.of(moduleConfig));
-        abstractModuleRefreshSchedulerImpl.run();
-
-        //此处由于此前已经存在该模块，所以必须要激活才能使用
-        moduleManager.activeVersion("helloWorld", moduleConfig.getVersion());
-        Module demo2 = moduleManager.find(moduleConfig.getName(),moduleConfig.getVersion());
-        String result2 = demo2.doAction("helloWorld", "zzz");
-        System.out.println("result2 = " + result2);
-
-        Module demo1 = moduleManager.find("helloWorld","1.0.0");
-        String result1 = demo1.doAction("helloWorld", "zzz");
-        System.out.println("result1 = " + result1);
-
-
-
     }
 
 }

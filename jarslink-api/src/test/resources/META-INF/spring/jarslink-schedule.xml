@@ -9,6 +9,6 @@
        default-autowire="byName">
 
     <!-- 配置模块刷新调度 -->
-    <bean class="com.alipay.jarslink.api.impl.AbstractModuleRefreshSchedulerImpl"></bean>
+    <bean name="abstractModuleRefreshSchedulerImpl" class="com.alipay.jarslink.api.impl.AbstractModuleRefreshSchedulerImpl"></bean>
 
 </beans>
