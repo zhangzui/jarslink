@@ -9,6 +9,7 @@ import com.alipay.jarslink.api.Module;
 import com.alipay.jarslink.api.ModuleConfig;
 import com.alipay.jarslink.api.ModuleLoader;
 import com.google.common.collect.ImmutableList;
+import com.google.common.collect.Lists;
 import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -16,8 +17,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
+import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -66,13 +69,12 @@ public class ModuleLoaderImplTest {
             String name = "demo" + i;
             Module module = loadModulezzz(name);
             Assert.assertNotNull(module);
-
-            String result = module.doAction("helloWorld", "zzz");
+            String result = module.doAction("helloworld", "zzz");
             System.out.println("result = " + result);
             //卸载模块
             moduleLoader.unload(module);
             Assert.assertTrue(module.getActions().isEmpty());
-            Thread.sleep(5000);
+            Thread.sleep(2000);
         }
 
     }
@@ -210,8 +212,8 @@ public class ModuleLoaderImplTest {
         return buildModuleConfig("demo", "1.0.0.20170621", enabled);
     }
 
-    public static ModuleConfig buildModuleConfigZZZ(boolean enabled,String version) {
-        return buildModuleConfigZZZ("helloWorld", version, enabled);
+    public static ModuleConfig buildModuleConfigZZZ(String name,boolean enabled,String version) {
+        return buildModuleConfigZZZ(name, version, enabled);
     }
 
     public static ModuleConfig buildModuleConfig(String name, boolean enabled) {
@@ -242,28 +244,41 @@ public class ModuleLoaderImplTest {
     }
 
     public static ModuleConfig buildModuleConfigZZZ(String name, String version, boolean enabled) {
-
-
         ModuleConfig moduleConfig = new ModuleConfig();
         String scanBase = "com.zz.opensdk.jarslink.main";
-
         moduleConfig.addScanPackage(scanBase);
         moduleConfig.removeScanPackage(scanBase);
         Map<String, Object> properties = new HashMap();
-        moduleConfig.withEnabled(enabled).
-                withVersion(version).
-                withOverridePackages(ImmutableList.of("com.zz.opensdk.jarslink.action")).
-                withProperties(properties);
-
-        URL demoModule = Thread.currentThread().getContextClassLoader().getResource("my_jarslink-"+version+".jar");
-
-        moduleConfig.setOverridePackages(ImmutableList.of("com.zz.opensdk.jarslink.action"));
         moduleConfig.setName(name);
         moduleConfig.setEnabled(enabled);
         moduleConfig.setVersion(version);
         properties.put("url", "127.0.0.1");
         moduleConfig.setProperties(properties);
+        //开启多个版本
+        moduleConfig.setNeedUnloadOldVersion(false);
+
+        //类加载器
+//        ClassLoader currentClassLoader = Thread.currentThread().getContextClassLoader();
+//        List<URL> moduleUrl = Lists.newArrayList();
+//        List<String> overridePackages = ImmutableList.of("com.zz.opensdk.jarslink.action");
+//        try {
+//            URL url = new URL("file:/D:/User/zhangzuigit/jarslink/jarslink-api/src/test/resources/my_jarslink-1.0.0.jar");
+//            moduleUrl.add(url);
+//        } catch (MalformedURLException e) {
+//            e.printStackTrace();
+//        }
+//
+//        ModuleClassLoader myModuleClassLoader = new ModuleClassLoader(moduleUrl,Thread.currentThread().getContextClassLoader(),overridePackages);
+//        Thread.currentThread().setContextClassLoader(myModuleClassLoader);
+
+        URL demoModule = Thread.currentThread().getContextClassLoader().getResource("my_jarslink-"+version+".jar");
+
+        //moduleConfig配置信息
+        //moduleConfig.setOverridePackages(ImmutableList.of("com.zz.opensdk.jarslink.action"));
+
         moduleConfig.setModuleUrl(ImmutableList.of(demoModule));
+
+//        Thread.currentThread().setContextClassLoader(currentClassLoader);
         return moduleConfig;
     }
 

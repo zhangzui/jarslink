@@ -112,7 +112,7 @@ public class AbstractModuleRefreshSchedulerTest {
     public void shouldUpdateModuleaaa() throws InterruptedException {
         while (true){
             abstractModuleRefreshSchedulerImpl.setModuleConfigs(ImmutableList.of(buildModuleConfigZZZ
-                    (true,"1.0.0")));
+                    ("helloworld",true,"1.0.0")));
             System.out.println("size:"+abstractModuleRefreshSchedulerImpl.queryModuleConfigs().size());
             abstractModuleRefreshSchedulerImpl.run();
 
@@ -121,34 +121,6 @@ public class AbstractModuleRefreshSchedulerTest {
             System.out.println("result = " + result);
             Thread.sleep(5000);
         }
-    }
-    @Test
-    public void shouldUpdateModulezzz() throws InterruptedException {
-        //装载模块
-        abstractModuleRefreshSchedulerImpl.setModuleConfigs(ImmutableList.of(buildModuleConfigZZZ
-                (true,"1.0.0")));
-        Assert.assertEquals(1, abstractModuleRefreshSchedulerImpl.queryModuleConfigs().size());
-        abstractModuleRefreshSchedulerImpl.run();
-        Module demo = moduleManager.find("helloWorld");
-
-        String result = demo.doAction("helloWorld", "zzz");
-        System.out.println("result = " + result);
-        //卸载
-        abstractModuleRefreshSchedulerImpl.setModuleConfigs(new ArrayList<ModuleConfig>());
-        abstractModuleRefreshSchedulerImpl.run();
-
-        //修改模块
-        ModuleConfig moduleConfig = buildModuleConfigZZZ(true,"1.0.1");
-        abstractModuleRefreshSchedulerImpl.setModuleConfigs(ImmutableList.of(moduleConfig));
-        abstractModuleRefreshSchedulerImpl.run();
-
-        //此处由于此前已经存在该模块，所以必须要激活才能使用
-        moduleManager.activeVersion("helloWorld", moduleConfig.getVersion());
-        demo = moduleManager.find(moduleConfig.getName());
-        result = demo.doAction("helloWorld", "zzz");
-        System.out.println("result = " + result);
-        //上述部分可以替换为下面的写法
-        //demo = moduleManager.find(moduleConfig.getName(), moduleConfig.getVersion());
     }
 
 }

@@ -63,12 +63,12 @@ public abstract class AbstractModuleRefreshScheduler implements InitializingBean
     /**
      * 默认延迟执行,单位秒
      */
-    private static final int DEFAULT_INITIAL_DELAY = 5;
+    private static final int DEFAULT_INITIAL_DELAY = 1;
 
     /**
      * 模块刷新默认间隔,单位秒
      */
-    private static final int DEFAULT_REFRESH_DELAY = 60;
+    private static final int DEFAULT_REFRESH_DELAY = 2;
 
     /** 初始化的延迟时间 */
     private int initialDelay = DEFAULT_INITIAL_DELAY;
