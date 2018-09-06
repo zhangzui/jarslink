@@ -88,14 +88,14 @@ public abstract class AbstractModuleRefreshScheduler implements InitializingBean
     @Override
     public void afterPropertiesSet() throws Exception {
         //先刷新一次
-        refreshModuleConfigs();
-        scheduledExecutor = new ScheduledThreadPoolExecutor(1,
-                new BasicThreadFactory.Builder().namingPattern("module_refresh-schedule-pool-%d").daemon(true).build());
-        scheduledExecutor
-                .scheduleWithFixedDelay(this, initialDelay, refreshDelay, TimeUnit.SECONDS);
-        if (LOGGER.isInfoEnabled()) {
-            LOGGER.info("AbstractModuleRefreshScheduler start");
-        }
+//        refreshModuleConfigs();
+//        scheduledExecutor = new ScheduledThreadPoolExecutor(1,
+//                new BasicThreadFactory.Builder().namingPattern("module_refresh-schedule-pool-%d").daemon(true).build());
+//        scheduledExecutor
+//                .scheduleWithFixedDelay(this, initialDelay, refreshDelay, TimeUnit.SECONDS);
+//        if (LOGGER.isInfoEnabled()) {
+//            LOGGER.info("AbstractModuleRefreshScheduler start");
+//        }
     }
 
     /**

@@ -57,12 +57,17 @@ public class ZRefreshSchedulerTest {
     @Autowired
     private ModuleLoader moduleLoader;
 
+    /**
+     * 装载一个模块，并修改模块jar的版本，实现相同jar不同版本的注入
+     * @throws InterruptedException
+     */
     @Test
-    public void shouldUpdateModulezzz() throws InterruptedException {
+    public void test001() throws InterruptedException {
         //装载模块
         Module module = moduleLoader.load(buildModuleConfigZZZ("helloworld",true,"1.0.0"));
         moduleManager.register(module);
 
+        //Thread.sleep(8000);
         //修改模块
         Module module2 = moduleLoader.load(buildModuleConfigZZZ("helloWorld",true,"1.0.1"));
         moduleManager.register(module2);
@@ -76,36 +81,14 @@ public class ZRefreshSchedulerTest {
         System.out.println("demo2 = " + demo2.doAction("helloWorld", "zzz"));
 
     }
-    @Test
-    public void versionTest() throws InterruptedException {
-        //注册版本1
-        ModuleConfig moduleConfig1 = buildModuleConfigZZZ("helloworld",true,"1.0.0");
-        Module module1 = moduleLoader.load(moduleConfig1);
-        moduleManager.register(module1);
-
-        //注册版本2
-        ModuleConfig moduleConfig2 = buildModuleConfigZZZ("helloworld",true,"1.0.1");
-        Module module2 = moduleLoader.load(moduleConfig2);
-        moduleManager.register(module2);
-
-        //测试1.0.0
-        Module demo1 = moduleManager.find("helloWorld","1.0.0");
-        String result1 = demo1.doAction("helloWorld", "xxxx");
-        System.out.println("result1 = " + result1);
-
-        //测试1.0.1
-        Module demo2 = moduleManager.find(moduleConfig2.getName(), moduleConfig2.getVersion());
-        String result2 = demo2.doAction("helloWorld", "xxxx");
-        System.out.println("result2 = " + result2);
-    }
 
     /**
-     * 同时注册两个，如果name一样，会失败
+     * 使用abstractModuleRefreshSchedulerImpl
+     * 注册两个helloworldh和helloworld2，如果name一样，会失败
      * 不同的name可以注册进去
-     * @throws InterruptedException
      */
     @Test
-    public void shouldUpdateModule2() throws InterruptedException {
+    public void test002(){
         //装载模块
         List<ModuleConfig> moduleConfigs = new ArrayList<>();
         moduleConfigs.add(buildModuleConfigZZZ("helloworld",true,"1.0.0"));
@@ -114,7 +97,6 @@ public class ZRefreshSchedulerTest {
 
         abstractModuleRefreshSchedulerImpl.run();
 
-        //此处由于此前已经存在该模块，所以必须要激活才能使用
         //测试1.0.0
         Module demo1 = moduleManager.find("helloWorld","1.0.0");
         String result = demo1.doAction("helloWorld", "1.0.0");
@@ -124,32 +106,5 @@ public class ZRefreshSchedulerTest {
         Module demo2 = moduleManager.find("helloWorld2","1.0.1");
         String result2 = demo2.doAction("helloWorld", "1.0.1");
         System.out.println("result2 = " + result2);
-
-    }
-
-    /**
-     *
-     * @throws InterruptedException
-     */
-    @Test
-    public void shouldUpdateModule3() throws InterruptedException {
-        abstractModuleRefreshSchedulerImpl.setModuleConfigs(ImmutableList.of(buildModuleConfigZZZ("helloworld",true,"1.0.0")));
-        abstractModuleRefreshSchedulerImpl.run();
-        //修改模块
-        ModuleConfig moduleConfig = buildModuleConfigZZZ("helloworld",true,"1.0.1");
-        abstractModuleRefreshSchedulerImpl.setModuleConfigs(ImmutableList.of(moduleConfig));
-        abstractModuleRefreshSchedulerImpl.run();
-        //此处由于此前已经存在该模块，所以必须要激活才能成为默认，不需带版本号
-        moduleManager.activeVersion(moduleConfig.getName(), moduleConfig.getVersion());
-
-        //测试1.0.1
-        Module demo2 = moduleManager.find("helloWorld","1.0.1");
-        String result2 = demo2.doAction("helloWorld", "1.0.1");
-        System.out.println("result2 = " + result2);
-
-        //测试1.0.0
-        Module demo1 = moduleManager.find("helloWorld","1.0.0");
-        String result = demo1.doAction("helloWorld", "1.0.0");
-        System.out.println("result = " + result);
     }
 }
