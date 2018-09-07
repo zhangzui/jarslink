@@ -67,7 +67,7 @@ public class ZRefreshSchedulerTest {
         Module module = moduleLoader.load(buildModuleConfigZZZ("helloworld",true,"1.0.0"));
         moduleManager.register(module);
 
-        //Thread.sleep(8000);
+        Thread.sleep(5000);
         //修改模块
         Module module2 = moduleLoader.load(buildModuleConfigZZZ("helloWorld",true,"1.0.1"));
         moduleManager.register(module2);
