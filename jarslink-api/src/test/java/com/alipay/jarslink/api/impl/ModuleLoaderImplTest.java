@@ -276,30 +276,30 @@ public class ModuleLoaderImplTest {
         properties.put("url", "127.0.0.1");
         moduleConfig.setProperties(properties);
         //开启多个版本
-        moduleConfig.setNeedUnloadOldVersion(false);
+        moduleConfig.setNeedUnloadOldVersion(true);
 
         //类加载器
-        ClassLoader currentClassLoader = Thread.currentThread().getContextClassLoader();
-        List<URL> moduleUrl = Lists.newArrayList();
-        List<String> overridePackages = ImmutableList.of("com.zz.opensdk.jarslink.action");
-        try {
-            URL url = new URL("file:/D:/User/zhangzuigit/jarslink/jarslink-api/src/test/resources/my_jarslink-1.0.0.jar");
-            moduleUrl.add(url);
-        } catch (MalformedURLException e) {
-            e.printStackTrace();
-        }
+//        ClassLoader currentClassLoader = Thread.currentThread().getContextClassLoader();
+//        List<URL> moduleUrl = Lists.newArrayList();
+//        List<String> overridePackages = ImmutableList.of("com.zz.opensdk.jarslink.action");
+////        try {
+////            URL url = new URL("file:/D:/User/zhangzuigit/jarslink/jarslink-api/src/test/resources/my_jarslink-1.0.0.jar");
+////            moduleUrl.add(url);
+////        } catch (MalformedURLException e) {
+////            e.printStackTrace();
+////        }
+//
+////        ModuleClassLoader myModuleClassLoader = new ModuleClassLoader(moduleUrl,Thread.currentThread().getContextClassLoader(),overridePackages);
+////        Thread.currentThread().setContextClassLoader(myModuleClassLoader);
 
-        ModuleClassLoader myModuleClassLoader = new ModuleClassLoader(moduleUrl,Thread.currentThread().getContextClassLoader(),overridePackages);
-        Thread.currentThread().setContextClassLoader(myModuleClassLoader);
-
-        URL demoModule = Thread.currentThread().getContextClassLoader().getResource("my_jarslink-1.0.0.jar");
+        URL demoModule = Thread.currentThread().getContextClassLoader().getResource("my_jarslink-"+version+".jar");
 
         //moduleConfig配置信息
         //moduleConfig.setOverridePackages(ImmutableList.of("com.zz.opensdk.jarslink.action"));
 
         moduleConfig.setModuleUrl(ImmutableList.of(demoModule));
 
-        Thread.currentThread().setContextClassLoader(currentClassLoader);
+//        Thread.currentThread().setContextClassLoader(currentClassLoader);
         return moduleConfig;
     }
 

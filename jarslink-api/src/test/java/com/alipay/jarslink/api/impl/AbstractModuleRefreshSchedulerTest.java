@@ -113,12 +113,19 @@ public class AbstractModuleRefreshSchedulerTest {
         while (true){
             abstractModuleRefreshSchedulerImpl.setModuleConfigs(ImmutableList.of(buildModuleConfigZZZ
                     ("helloworld",true,"1.0.0")));
+
+            abstractModuleRefreshSchedulerImpl.setModuleConfigs(ImmutableList.of(buildModuleConfigZZZ
+                    ("helloworld2",true,"1.0.1")));
+
             System.out.println("size:"+abstractModuleRefreshSchedulerImpl.queryModuleConfigs().size());
             abstractModuleRefreshSchedulerImpl.run();
 
-            Module demo = moduleManager.find("helloWorld");
+            Module demo = moduleManager.find("helloWorld","1.0.0");
+            Module demo2 = moduleManager.find("helloworld2","1.0.1");
             String result = demo.doAction("helloWorld", "zzz");
+            String result2 = demo2.doAction("helloworld2", "zzz2");
             System.out.println("result = " + result);
+            System.out.println("result2 = " + result2);
             Thread.sleep(5000);
         }
     }

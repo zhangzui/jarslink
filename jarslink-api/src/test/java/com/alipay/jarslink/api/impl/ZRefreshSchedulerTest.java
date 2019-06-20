@@ -94,17 +94,15 @@ public class ZRefreshSchedulerTest {
         moduleConfigs.add(buildModuleConfigZZZ("helloworld",true,"1.0.0"));
         moduleConfigs.add(buildModuleConfigZZZ("helloworld2",true,"1.0.1"));
         abstractModuleRefreshSchedulerImpl.setModuleConfigs(moduleConfigs);
-
         abstractModuleRefreshSchedulerImpl.run();
-
         //测试1.0.0
         Module demo1 = moduleManager.find("helloWorld","1.0.0");
-        String result = demo1.doAction("helloWorld", "1.0.0");
+        String result = demo1.doAction("helloWorld", "zzz111");
         System.out.println("result = " + result);
 
         //测试1.0.1
-        Module demo2 = moduleManager.find("helloWorld2","1.0.1");
-        String result2 = demo2.doAction("helloWorld", "1.0.1");
+        Module demo2 = moduleManager.find("helloworld2","1.0.1");
+        String result2 = demo2.doAction("helloWorld", "zzz111222");
         System.out.println("result2 = " + result2);
     }
 }
